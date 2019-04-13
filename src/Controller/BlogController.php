@@ -4,11 +4,16 @@
 namespace App\Controller;
 
 
+use App\Entity\Post;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+/**
+ * @Route("/blog")
+ */
 class BlogController extends AbstractController
 {
    private const POSTS = [
@@ -18,7 +23,7 @@ class BlogController extends AbstractController
    ];
 
     /**
-     * @Route("/blog/{offset}/{limit}", name="blog_list",
+     * @Route("/{offset}/{limit}", name="blog_list",
      *        defaults={"offset"=0, "limit"=10},
      *        requirements={"offset"="\d+", "limit": "\d+"},
      *        methods={"GET"}
@@ -26,46 +31,82 @@ class BlogController extends AbstractController
      */
    public function list($offset, $limit, Request $request) {
 
-       $page = $request->get('page');
-       $name = $request->get('name');
-       return new JsonResponse([
+      /* $page = $request->get('page');
+       $name = $request->get('name');*/
+
+       $repository = $this->getDoctrine()->getRepository(Post::class);
+
+       $posts = $repository->findAll();
+
+       return $this->json([
            'data' => array_map(function($post) {
                return [
-                   'id' => $post['id'] * 100,
-                   'label' => $post['title'],
-                   'slug' => $this->generateUrl('blog_post_by_slug', ['slug' => $post['slug']])
+                   'id' => $post->getId(),
+                   'label' =>  $post->getTitle(),
+                   'slug' => $this->generateUrl('blog_post_by_slug',
+                   ['slug' =>  $post->getSlug()])
                ];
-           }, self::POSTS),
+           }, $posts),
            'offset' => $offset,
-           'limit' => $limit,
-           'page' => $page,
-           'name' => $name
+           'limit' => $limit
        ]);
    }
 
     /**
-     * @Route("/blog/post/{id}", name="blog_post_by_id", requirements={"id"="\d+"})
+     * @Route("/post/{id}", name="blog_post_by_id", requirements={"id"="\d+"})
      */
    public function postById($id) {
 
-       $myPost = self::POSTS[array_search($id, array_column(self::POSTS, 'id'))];
-        return new JsonResponse(['data' => $myPost]);
+       $repository = $this->getDoctrine()->getRepository(Post::class);
+
+       $post = $repository->find($id);
+
+        return $this->json(['data' => [
+                        'id' => $post->getId(),
+                        'label' =>  $post->getTitle(),
+                        'slug' => $this->generateUrl('blog_post_by_slug',
+                            ['slug' =>  $post->getSlug()])
+                    ]
+        ]);
    }
 
     /**
-     * @Route("/blog/post/{slug}", name="blog_post_by_slug", methods={"GET"})
+     * @Route("/post/{slug}", name="blog_post_by_slug", methods={"GET"})
      */
    public function postBySlug($slug) {
-       $myPost = self::POSTS[array_search($slug, array_column (self::POSTS, 'slug'))];
-       return new JsonResponse(['data' => $myPost]);
+
+       $repository = $this->getDoctrine()->getRepository(Post::class);
+
+       $post = $repository->findOneBy(['slug' => $slug]);
+
+       return $this->json(['data' => [
+           'id' => $post->getId(),
+           'label' =>  $post->getTitle(),
+           'slug' => $this->generateUrl('blog_post_by_slug',
+               ['slug' =>  $post->getSlug()])
+       ]
+       ]);
    }
 
+
+
     /**
-     * @Route("/blog/post/add", name="blog_post_add",
+     * @Route("/post/add", name="blog_post_add",
      *        methods={"POST"})
      */
-   public function add() {
+   public function add(Request $request) {
 
-       return new JsonResponse(['data' => 'add']);
+       $serializer = $this->get('serializer');
+
+       $data = $request->getContent();
+       $post = $serializer->deserialize($data, Post::class, 'json');
+
+       $em = $this->getDoctrine()->getManager();
+
+       $em->persist($post);
+
+       $em->flush();
+
+       return $this->json(['data' => $post], Response::HTTP_CREATED);
    }
 }
