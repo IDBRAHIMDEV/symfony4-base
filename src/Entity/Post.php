@@ -31,7 +31,7 @@ class Post
     private $content;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="posts")
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="posts", cascade={"remove"})
      */
     private $author;
 
