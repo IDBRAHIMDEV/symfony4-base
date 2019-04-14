@@ -60,17 +60,7 @@ class Post
         return $this;
     }
 
-    public function getAuthor(): ?string
-    {
-        return $this->author;
-    }
 
-    public function setAuthor(?string $author): self
-    {
-        $this->author = $author;
-
-        return $this;
-    }
 
     public function getPublished(): ?\DateTimeInterface
     {
@@ -104,6 +94,18 @@ class Post
     public function setSlug(string $slug): self
     {
         $this->slug = $slug;
+
+        return $this;
+    }
+
+    public function getAuthor(): ?User
+    {
+        return $this->author;
+    }
+
+    public function setAuthor(?User $author): self
+    {
+        $this->author = $author;
 
         return $this;
     }
