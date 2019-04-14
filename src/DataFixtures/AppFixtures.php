@@ -2,6 +2,7 @@
 
 namespace App\DataFixtures;
 
+use App\Entity\Comment;
 use App\Entity\Post;
 use App\Entity\User;
 use Faker\Factory;
@@ -25,6 +26,7 @@ class AppFixtures extends Fixture
     {
         $this->loadUser($manager);
         $this->loadPost($manager);
+        $this->loadComment($manager);
     }
 
     public function loadUser(ObjectManager $manager) {
@@ -38,6 +40,7 @@ class AppFixtures extends Fixture
                 $myUser,
                 'secret'
             ));
+
             $myUser->setEmail($this->faker->email);
 
             $manager->persist($myUser);
@@ -62,6 +65,26 @@ class AppFixtures extends Fixture
             $user = $this->getReference("user_".rand(0, 9));
             $myPost->setAuthor($user);
             $manager->persist($myPost);
+            $this->addReference("post_$i", $myPost);
+        }
+
+
+        $manager->flush();
+    }
+
+
+    public function loadComment(ObjectManager $manager) {
+        for($i = 0; $i < 10000; $i++) {
+
+            $myComment = new Comment();
+
+            $myComment->setContent($this->faker->sentence(20));
+            $user = $this->getReference("user_".rand(0, 9));
+            $post = $this->getReference("post_".rand(0, 999));
+
+            $myComment->setAuthor($user);
+            $myComment->setPost($post);
+            $manager->persist($myComment);
         }
 
 
