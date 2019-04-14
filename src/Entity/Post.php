@@ -2,10 +2,12 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\PostRepository")
+ * @ApiResource()
  */
 class Post
 {
@@ -27,7 +29,7 @@ class Post
     private $content;
 
     /**
-     * @ORM\Column(type="string", length=50, nullable=true)
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="posts")
      */
     private $author;
 

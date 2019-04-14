@@ -109,4 +109,22 @@ class BlogController extends AbstractController
 
        return $this->json(['data' => $post], Response::HTTP_CREATED);
    }
+
+    /**
+     * @Route("/post/delete/{id}", name="blog_delete_post",
+     *        methods={"DELETE"}, requirements={"id"="\d+"})
+     */
+   public function destroy($id) {
+       $repository = $this->getDoctrine()->getRepository(Post::class);
+
+       $post = $repository->find($id);
+
+       $em = $this->getDoctrine()->getManager();
+
+       $em->remove($post);
+
+       $em->flush();
+
+       return $this->json(null, Response::HTTP_NO_CONTENT);
+   }
 }
