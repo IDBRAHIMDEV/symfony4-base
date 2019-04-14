@@ -8,11 +8,12 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ApiResource(
  *     itemOperations={"get", "delete"},
- *     collectionOperations={"get"},
+ *     collectionOperations={"get", "post"},
  *     normalizationContext={"groups"={"read"}}
  * )
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
@@ -28,23 +29,32 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=50)
+     * @Assert\NotBlank(message="ce champ est obligatoire !!")
+     * @Assert\Length(min=4, max=10, minMessage="ce champ doit avoir au moins {{ limit }}", maxMessage="ce champ ne doit pas déppaser {{ limit }} chars!!")
      */
     private $username;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank()
+     * @Assert\Regex(
+     *     pattern="/^[a-z]+$/i",
+     *     message="This field is not respect this pattern !!"
+     * )
      */
     private $password;
 
     /**
      * @ORM\Column(type="string", length=50)
      * @Groups({"read"})
+     * @Assert\NotBlank()
      */
     private $name;
 
     /**
      * @ORM\Column(type="string", length=100, nullable=true)
      * @Groups({"read"})
+     * @Assert\Email()
      */
     private $email;
 
