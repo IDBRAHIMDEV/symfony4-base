@@ -3,12 +3,22 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Annotation\ApiSubresource;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ApiResource(
  *     itemOperations={"get", "delete"},
- *     collectionOperations={"post"}
+ *     collectionOperations={
+ *        "post"
+ *     },
+ *     subresourceOperations={
+ *     "api_posts_comments_get_subresource"={
+ *         "method"="GET",
+ *         "normalization_context"={"groups"={"post-comment-with-author"}}
+ *     }
+ *   }
  * )
  * @ORM\Entity(repositoryClass="App\Repository\CommentRepository")
  */
@@ -18,16 +28,20 @@ class Comment
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Groups({"post-comment-with-author"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"post-comment-with-author"})
      */
     private $content;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="comments")
+     * @Groups({"post-comment-with-author"})
+     * @ApiSubresource()
      */
     private $author;
 

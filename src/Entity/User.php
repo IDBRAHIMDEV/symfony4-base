@@ -15,13 +15,13 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     itemOperations={"get", "delete"},
  *     collectionOperations={
  *      "get"={
+ *         "normalization_context"={"groups"={"get"}},
  *         "access_control"="is_granted('IS_AUTHENTICATED_FULLY')"
  *       },
  *      "post"={
  *         "access_control"="is_granted('IS_AUTHENTICATED_FULLY')"
  *       }
- *     },
- *     normalizationContext={"groups"={"read"}}
+ *     }
  * )
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
  */
@@ -31,6 +31,7 @@ class User implements UserInterface
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Groups({"get", "post-comment-with-author"})
      */
     private $id;
 
@@ -53,20 +54,20 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=50)
-     * @Groups({"read"})
+     * @Groups({"get", "post-comment-with-author"})
      * @Assert\NotBlank()
      */
     private $name;
 
     /**
      * @ORM\Column(type="string", length=100, nullable=true)
-     * @Groups({"read"})
      * @Assert\Email()
      */
     private $email;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Comment", mappedBy="author", cascade={"remove"})
+     * @Groups({"get"})
      */
     private $comments;
 
