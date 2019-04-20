@@ -9,7 +9,13 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\PostRepository")
- * @ApiResource()
+ * @ApiResource(
+ *     itemOperations={"get",
+ *       "put"={
+ *          "access_control"="is_granted('IS_AUTHENTICATED_FULLY') and object.getAuthor() == user"
+ *       }
+ *     }
+ * )
  */
 class Post
 {
