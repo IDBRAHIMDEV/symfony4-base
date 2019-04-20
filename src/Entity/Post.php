@@ -32,6 +32,7 @@ class Post
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="posts", cascade={"remove"})
+     * @ORM\JoinColumn(nullable=false)
      */
     private $author;
 
