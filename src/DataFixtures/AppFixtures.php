@@ -43,6 +43,10 @@ class AppFixtures extends Fixture
 
             $myUser->setEmail($this->faker->email);
 
+            $roles = ['ROLE_COMMENTATOR', 'ROLE_WRITER', 'ROLE_EDITOR', 'ROLE_ADMIN'];
+
+            $myUser->setRoles([$roles[rand(0, 3)]]);
+
             $manager->persist($myUser);
 
             $this->addReference("user_$i", $myUser);

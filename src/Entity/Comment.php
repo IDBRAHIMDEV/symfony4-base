@@ -9,9 +9,15 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ApiResource(
- *     itemOperations={"get", "delete"},
+ *     itemOperations={"get", "delete",
+ *       "put"={
+ *          "access_control"="is_granted('IS_AUTHENTICATED_FULLY') and (is_granted('ROLE_COMMMENTATOR') and object.getAuthor() == user) or is_granted('ROLE_EDITOR')"
+ *        }
+ *     },
  *     collectionOperations={
- *        "post"
+ *        "post"={
+ *           "access_control"="is_granted('ROLE_COMMENTATOR') and is_granted('IS_AUTHENTICATED_FULLY')"
+ *        }
  *     },
  *     subresourceOperations={
  *     "api_posts_comments_get_subresource"={
