@@ -16,7 +16,8 @@
         "symfony/orm-pack": "^1.0",
         "symfony/serializer-pack": "^1.0",
         "symfony/validator": "4.2.*",
-        "symfony/yaml": "4.2.*"
+        "symfony/yaml": "4.2.*",
+        "vich/uploader-bundle": "^1.9"
     },
     "config": {
         "preferred-install": {

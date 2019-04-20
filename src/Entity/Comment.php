@@ -11,7 +11,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @ApiResource(
  *     itemOperations={"get", "delete",
  *       "put"={
- *          "access_control"="is_granted('IS_AUTHENTICATED_FULLY') and (is_granted('ROLE_COMMMENTATOR') and object.getAuthor() == user) or is_granted('ROLE_EDITOR')"
+ *          "access_control"="is_granted('IS_AUTHENTICATED_FULLY') and ((is_granted('ROLE_COMMENTATOR') and object.getAuthor() == user) or is_granted('ROLE_EDITOR'))"
  *        }
  *     },
  *     collectionOperations={
