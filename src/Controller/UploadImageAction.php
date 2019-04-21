@@ -6,7 +6,9 @@ use App\Entity\Image;
 use App\Form\ImageType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Form\FormFactoryInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+
 
 class UploadImageAction
 {

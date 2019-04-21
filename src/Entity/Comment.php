@@ -9,12 +9,16 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ApiResource(
+ *     attributes={
+ *       "pagination_client_enabled"=true
+ *     },
  *     itemOperations={"get", "delete",
  *       "put"={
  *          "access_control"="is_granted('IS_AUTHENTICATED_FULLY') and ((is_granted('ROLE_COMMENTATOR') and object.getAuthor() == user) or is_granted('ROLE_EDITOR'))"
  *        }
  *     },
  *     collectionOperations={
+ *        "get",
  *        "post"={
  *           "access_control"="is_granted('ROLE_COMMENTATOR') and is_granted('IS_AUTHENTICATED_FULLY')"
  *        }
