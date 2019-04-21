@@ -10,6 +10,7 @@ use Doctrine\Common\Collections\Collection;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
+use ApiPlatform\Core\Serializer\Filter\PropertyFilter;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -20,12 +21,17 @@ use Doctrine\ORM\Mapping as ORM;
  * )
  * @ApiFilter(
  *     SearchFilter::class,
- *     properties={"id"="exact", "title"="partial", "content"="partial"}
+ *     properties={"id"="exact", "title"="partial", "content"="partial", "author.name"="exact"}
  * )
  * @ApiFilter(
  *     DateFilter::class,
  *     properties={"published"}
  * )
+ * @ApiFilter(
+ *     PropertyFilter::class,
+ *     arguments={"parameterName": "properties", "overrideDefaultProperties": false, "whitelist": {"id", "title", "content", "slug"}}
+ * )
+ *
  * @ApiResource(
  *     itemOperations={"get",
  *       "put"={
