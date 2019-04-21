@@ -6,10 +6,27 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
+use App\Controller\UploadImageAction;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ApiResource()
+ * @ApiResource(
+ *     attributes={
+ *       "formats"={"json", "form"={"multipart/form-data"}}
+ *     },
+ *     collectionOperations={
+ *       "post"={
+ *          "method"="POST",
+ *          "path"="/images",
+ *          "controller"=UploadImageAction::class,
+ *          "defaults"={"_api_receive"=false}
+ *
+ *       }
+ *     }
+ * )
  * @ORM\Entity(repositoryClass="App\Repository\ImageRepository")
+ * @Vich\Uploadable()
  */
 class Image
 {
@@ -26,7 +43,8 @@ class Image
     private $url;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @Vich\UploadableField(mapping="images", fileNameProperty="url")
+     * @Assert\NotNull()
      */
     private $file;
 
@@ -57,18 +75,6 @@ class Image
         return $this;
     }
 
-    public function getFile(): ?string
-    {
-        return $this->file;
-    }
-
-    public function setFile(?string $file): self
-    {
-        $this->file = $file;
-
-        return $this;
-    }
-
     /**
      * @return Collection|Post[]
      */
@@ -93,5 +99,16 @@ class Image
         }
 
         return $this;
+    }
+
+    public function setFile(?File $file = null): void
+    {
+        $this->file = $file;
+
+    }
+
+    public function getFile(): ?File
+    {
+        return $this->file;
     }
 }
